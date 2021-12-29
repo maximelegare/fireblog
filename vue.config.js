@@ -11,4 +11,8 @@ module.exports = {
       .use("vue-svg-loader")
       .loader("vue-svg-loader");
   },
+  devServer: {
+    port: 8080,
+    // public: 'https://localhost:5001'
+  },
 };

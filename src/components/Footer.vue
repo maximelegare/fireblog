@@ -41,10 +41,12 @@ import instagram from "../assets/Icons/instagram-brands.svg";
 import twitter from "../assets/Icons/twitter-brands.svg";
 import linkedin from "../assets/Icons/linkedin-brands.svg";
 export default {
-  name: "footer",
+  name: "footer-section",
   data() {
     return {
       year: "",
+      admin:null,
+      user:null
     };
   },
   components: {
