@@ -10,17 +10,20 @@
         </div>
       </div>
     </div>
+  <HomePageRegister/> 
   </div>
 </template>
 
 <script>
 import BlogPost from "../components/BlogPost.vue";
 import BlogCards from "../components/BlogCards.vue";
+import HomePageRegister from "../components/HomePageRegister.vue"
 export default {
   name: "Home",
   components: {
     BlogPost,
     BlogCards,
+    HomePageRegister
   },
   data() {
     return {
