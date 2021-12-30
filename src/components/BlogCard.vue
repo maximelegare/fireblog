@@ -37,6 +37,9 @@ export default {
       return this.$store.state.editPost
     }
   },
+  beforeDestroy(){
+    this.$store.commit("toggleEditPost", false)
+  },
   components: {
     Arrow,
     Edit,
