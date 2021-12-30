@@ -6,7 +6,7 @@
       <div class="container">
         <h3>View More recent Blogs</h3>
         <div class="blog-cards">
-          <BlogCards v-for="post in sampleBlogCard" :key="post.id" :post="post" />
+          <BlogCard v-for="post in sampleBlogCards" :key="post.id" :post="post" />
         </div>
       </div>
     </div>
@@ -16,13 +16,13 @@
 
 <script>
 import BlogPost from "../components/BlogPost.vue";
-import BlogCards from "../components/BlogCards.vue";
+import BlogCard from "../components/BlogCard.vue";
 import HomePageRegister from "../components/HomePageRegister.vue"
 export default {
   name: "Home",
   components: {
     BlogPost,
-    BlogCards,
+    BlogCard,
     HomePageRegister
   },
   data() {
@@ -48,34 +48,13 @@ export default {
           blogCoverPhoto: "designed-for-everyone",
         },
       ],
-      sampleBlogCard: [
-        {
-          id: "1",
-          blogTitle: "Blog Card #1",
-          BlogCoverPhoto: "stock-1",
-          blogDate: "May 1, 2021",
-        },
-        {
-          id: "2",
-          blogTitle: "Blog Card #2",
-          BlogCoverPhoto: "stock-2",
-          blogDate: "May 1, 2021",
-        },
-        {
-          id: "3",
-          blogTitle: "Blog Card #3",
-          BlogCoverPhoto: "stock-3",
-          blogDate: "May 1, 2021",
-        },
-        {
-          id: "4",
-          blogTitle: "Blog Card #4",
-          BlogCoverPhoto: "stock-4",
-          blogDate: "May 1, 2021",
-        },
-      ],
     };
   },
+  computed:{
+    sampleBlogCards(){
+      return this.$store.state.sampleBlogCards
+    }
+  }
 };
 </script>
 
