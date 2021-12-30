@@ -1,6 +1,6 @@
 <template>
   <div class="form-wrap">
-    <form class="login">
+    <form class="login" @submit.prevent="signIn">
       <p class="login-register">
         Don't have ancount?
         <router-link class="router-link" :to="{ name: 'register' }"
@@ -17,6 +17,9 @@
           <input type="password" placeholder="Password" v-model="password" />
           <password class="icon" />
         </div>
+        <div class="error" v-if="error">
+          {{ this.errorMsg }}
+        </div>
       </div>
       <router-link class="forgot-password" :to="{ name: 'forgotPassword' }"
         >Forgot your password?</router-link
@@ -32,6 +35,9 @@
 import email from "../assets/Icons/envelope-regular.svg";
 import password from "../assets/Icons/lock-alt-solid.svg";
 
+import {auth} from "../firebase/firebaseInit"
+
+
 export default {
   name: "login",
   components: {
@@ -40,12 +46,27 @@ export default {
   },
   data() {
     return {
-      email: null,
-      password: null,
+      email: "",
+      password: "",
+      error: null,
+      errorMsg: "",
     };
+  },
+  methods: {
+    signIn(){
+      auth.signInWithEmailAndPassword(this.email, this.password).then(() => {
+        this.$router.push("home")
+        this.error = null
+        this.errorMsg = ""
+      }).catch((err) => {
+        this.error = true,
+        this.errorMsg = err.message
+      })
+    }
   },
 };
 </script>
+
 
 <style lang="scss">
 .form-wrap {
