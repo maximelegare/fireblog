@@ -11,6 +11,7 @@
 <script>
 import Navigation from "./components/Navigation.vue";
 import Footer from "./components/Footer.vue";
+import { auth } from "./firebase/firebaseInit";
 
 export default {
   name: "app",
@@ -18,11 +19,22 @@ export default {
   data() {
     return {
       navigationDisabled: null,
+      isLoading: false,
     };
   },
+  computed: {
+    currentUser() {
+      return this.$store.state.user;
+    },
+  },
   created() {
+    auth.onAuthStateChanged(async (user) => {
+      this.$store.commit("updateUser", user);
+      if (user) {
+        await this.$store.dispatch("getCurrentUser");
+      }
+    });
     this.checkRoute();
-    console.log(this.navigationDisabled);
   },
   mounted() {},
   methods: {
@@ -145,7 +157,7 @@ button,
   background-color: rgba(128, 128, 128, 0.5) !important;
 }
 
-.error{
+.error {
   text-align: center;
   font-size: 12px;
   color: red;
