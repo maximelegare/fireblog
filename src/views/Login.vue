@@ -55,11 +55,11 @@ export default {
   methods: {
     signIn(){
       auth.signInWithEmailAndPassword(this.email, this.password).then(() => {
-        this.$router.push("home")
+        this.$router.push({name:"home"})
         this.error = null
         this.errorMsg = ""
       }).catch((err) => {
-        this.error = true,
+        this.error = true
         this.errorMsg = err.message
       })
     }
