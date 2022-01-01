@@ -11,8 +11,19 @@
           <router-link class="link" :to="{ name: 'home' }">Home</router-link>
           <router-link class="link" :to="{ name: 'blogs' }">Blogs</router-link>
           <router-link class="link" to="#">Create Post</router-link>
-          <router-link class="link" :to="{ name: 'login' }">Login/Register</router-link>
+          <router-link v-if="!user" class="link" :to="{ name: 'login' }"
+            >Login/Register</router-link
+          >
         </ul>
+        <div v-if="user">
+          <div @click="toggleNavDropdown" class="profile-logo">
+            {{ this.$store.state.profileInitials }}
+          </div>
+          <NavDropdown
+            @close-dropdown="toggleNavDropdown"
+            v-show="navDropdownVisibility"
+          />
+        </div>
       </div>
     </nav>
     <menuIcon class="menu-icon" v-show="mobile" @click="toggleMobileNav" />
@@ -21,7 +32,9 @@
         <router-link class="link" :to="{ name: 'home' }">Home</router-link>
         <router-link class="link" :to="{ name: 'blogs' }">Blogs</router-link>
         <router-link class="link" to="#">Create Post</router-link>
-        <router-link class="link" :to="{ name: 'login' }">Login/Register</router-link>
+        <router-link class="link" :to="{ name: 'login' }" v-if="!user"
+          >Login/Register</router-link
+        >
       </ul>
     </transition>
   </header>
@@ -29,17 +42,20 @@
 
 <script>
 import menuIcon from "../assets/Icons/bars-regular.svg";
+import NavDropdown from "./Core/NavDropdown.vue";
 
 export default {
   name: "navigation",
   components: {
     menuIcon,
+    NavDropdown,
   },
   data() {
     return {
       mobile: null,
       mobileNav: null,
       windowWidth: null,
+      navDropdownVisibility: false,
     };
   },
   created() {
@@ -59,6 +75,15 @@ export default {
     },
     toggleMobileNav() {
       this.mobileNav = !this.mobileNav;
+    },
+    toggleNavDropdown() {
+      console.log("clicked");
+      this.navDropdownVisibility = !this.navDropdownVisibility;
+    },
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
     },
   },
 };
@@ -111,6 +136,18 @@ header {
           margin-right: 0;
         }
       }
+    }
+    .profile-logo {
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      color: #fff;
+      background-color: #303030;
     }
   }
   .menu-icon {

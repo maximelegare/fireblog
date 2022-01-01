@@ -3,7 +3,9 @@
     <div class="container">
       <div class="left">
         <div class="col-1">
-          <router-link class="header" :to="{ name: 'Home' }">FireBlogs</router-link>
+          <router-link class="header" :to="{ name: 'Home' }"
+            >FireBlogs</router-link
+          >
           <ul>
             <li>
               <a href="#"><youtube class="svg-icon"/></a>
@@ -22,14 +24,21 @@
         <div class="col-2">
           <ul>
             <router-link class="link" :to="{ name: 'home' }">Home</router-link>
-            <router-link class="link" :to="{ name: 'blogs' }">Blogs</router-link>
-            <router-link v-if="admin" class="link" to="#">Create Post</router-link>
-            <router-link v-if="!user" class="link" :to="{ name: 'login' }">Login In / Register</router-link>
+            <router-link class="link" :to="{ name: 'blogs' }"
+              >Blogs</router-link
+            >
+            <router-link v-if="admin" class="link" to="#"
+              >Create Post</router-link
+            >
+            <router-link v-if="!user" class="link" :to="{ name: 'login' }"
+              >Login In / Register</router-link
+            >
+            <div v-if="user" class="link" @click="signOut">Sign Out</div>
           </ul>
         </div>
       </div>
       <div class="right">
-        <p>Copyright {{year}} All Rights Reserved</p>
+        <p>Copyright {{ year }} All Rights Reserved</p>
       </div>
     </div>
   </footer>
@@ -40,20 +49,37 @@ import youtube from "../assets/Icons/youtube-brands.svg";
 import instagram from "../assets/Icons/instagram-brands.svg";
 import twitter from "../assets/Icons/twitter-brands.svg";
 import linkedin from "../assets/Icons/linkedin-brands.svg";
+
+import {auth} from "../firebase/firebaseInit"
+
 export default {
   name: "footer-section",
   data() {
     return {
       year: "",
-      admin:null,
-      user:null
+      admin: null,
     };
+  },
+  methods: {
+    signOut() {
+      auth.signOut().then(() => {
+        this.$emit("close-dropdown");
+        if (this.$route.name !== "home") {
+          this.$router.push({ name: "home" });
+        }
+      });
+    },
   },
   components: {
     youtube,
     instagram,
     twitter,
     linkedin,
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
   },
   created() {
     this.year = new Date().getFullYear();

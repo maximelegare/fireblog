@@ -53,22 +53,23 @@ export default new Vuex.Store({
       state.profileLastName = payload.data().lastName;
       state.profileUserName = payload.data().userName;
     },
-    updateUser(state, payload){
+    updateUser(state, payload) {
       state.user = payload;
     },
 
     setProfileInitials(state) {
-      state.profileInitials =
+      const initials =
         state.profileFirstName.match(/(\b\S)?/g).join("") +
         state.profileLastName.match(/(\b\S)?/g).join("");
+      state.profileInitials = initials.toUpperCase();
     },
   },
   actions: {
-    async getCurrentUser({commit}) {
+    async getCurrentUser({ commit }) {
       const currentUser = auth.currentUser.uid;
       const dataBase = await firestore.collection("users").doc(currentUser);
       const dbResults = await dataBase.get();
-      
+
       commit("setProfileInfo", dbResults);
       commit("setProfileInitials");
     },

@@ -1,29 +1,33 @@
 <template>
   <div class="home">
-    <BlogPost :post="welcomeScreen" />
+    <BlogPost v-if="!user" :post="welcomeScreen" />
     <BlogPost v-for="post in sampleBlogPost" :key="post.id" :post="post" />
     <div class="blog-card-wrap">
       <div class="container">
         <h3>View More recent Blogs</h3>
         <div class="blog-cards">
-          <BlogCard v-for="post in sampleBlogCards" :key="post.id" :post="post" />
+          <BlogCard
+            v-for="post in sampleBlogCards"
+            :key="post.id"
+            :post="post"
+          />
         </div>
       </div>
     </div>
-  <HomePageRegister/> 
+    <HomePageRegister v-if="!user"/>
   </div>
 </template>
 
 <script>
 import BlogPost from "../components/BlogPost.vue";
 import BlogCard from "../components/BlogCard.vue";
-import HomePageRegister from "../components/HomePageRegister.vue"
+import HomePageRegister from "../components/HomePageRegister.vue";
 export default {
   name: "Home",
   components: {
     BlogPost,
     BlogCard,
-    HomePageRegister
+    HomePageRegister,
   },
   data() {
     return {
@@ -50,11 +54,14 @@ export default {
       ],
     };
   },
-  computed:{
-    sampleBlogCards(){
-      return this.$store.state.sampleBlogCards
-    }
-  }
+  computed: {
+    sampleBlogCards() {
+      return this.$store.state.sampleBlogCards;
+    },
+    user() {
+      return this.$store.state.user;
+    },
+  },
 };
 </script>
 
