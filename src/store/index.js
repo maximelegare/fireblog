@@ -3,6 +3,8 @@ import Vuex from "vuex";
 import { auth } from "../firebase/firebaseInit";
 import { firestore } from "../firebase/firebaseInit";
 
+import { capitalizeString as capitalize } from "../_utilities/utilities";
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -49,12 +51,21 @@ export default new Vuex.Store({
     setProfileInfo(state, payload) {
       state.profileId = payload.id;
       state.profileEmail = payload.data().email;
-      state.profileFirstName = payload.data().firstName;
-      state.profileLastName = payload.data().lastName;
-      state.profileUserName = payload.data().userName;
+      state.profileFirstName = capitalize(payload.data().firstName);
+      state.profileLastName = capitalize(payload.data().lastName);
+      state.profileUserName = capitalize(payload.data().userName);
     },
     updateUser(state, payload) {
       state.user = payload;
+    },
+    changeFirstName(state, payload) {
+      state.profileFirstName = payload;
+    },
+    changeLastName(state, payload) {
+      state.profileLastName = payload;
+    },
+    changeUserName(state, payload) {
+      state.profileUserName = payload;
     },
 
     setProfileInitials(state) {
@@ -71,6 +82,16 @@ export default new Vuex.Store({
       const dbResults = await dataBase.get();
 
       commit("setProfileInfo", dbResults);
+      commit("setProfileInitials");
+    },
+    async updateUserProfile({ commit, state }) {
+      const dataBase = await firestore.collection("users").doc(state.profileId);
+      await dataBase.update({
+        firstName: state.profileFirstName,
+        lastName: state.profileLastName,
+        userName: state.profileUserName,
+      });
+
       commit("setProfileInitials");
     },
   },

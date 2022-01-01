@@ -12,11 +12,11 @@
       </div>
     </div>
     <div class="options">
-      <router-link to="#" class="option">
+      <router-link :to="{name:'profile'}" class="option">
         <userIcon class="icon" />
         <p>Profile</p>
       </router-link>
-      <router-link to="#" class="option">
+      <router-link :to="{name:'admin'}" class="option">
         <adminIcon class="icon" />
         <p>Admin</p>
       </router-link>
