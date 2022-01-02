@@ -31,7 +31,7 @@ export default {
     auth.onAuthStateChanged(async (user) => {
       this.$store.commit("updateUser", user);
       if (user) {
-        await this.$store.dispatch("getCurrentUser");
+        await this.$store.dispatch("getCurrentUser", user);
       }
     });
     this.checkRoute();

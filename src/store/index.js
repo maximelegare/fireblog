@@ -37,6 +37,7 @@ export default new Vuex.Store({
     ],
     editPost: null,
     user: null,
+    profileAdmin:null,
     profileId: null,
     profileEmail: null,
     profileFirstName: null,
@@ -58,6 +59,9 @@ export default new Vuex.Store({
     updateUser(state, payload) {
       state.user = payload;
     },
+    setProfileAdmin(state, payload){
+      state.profileAdmin = payload
+    },
     changeFirstName(state, payload) {
       state.profileFirstName = payload;
     },
@@ -74,16 +78,21 @@ export default new Vuex.Store({
         state.profileLastName.match(/(\b\S)?/g).join("");
       state.profileInitials = initials.toUpperCase();
     },
+    
   },
   actions: {
-    async getCurrentUser({ commit }) {
+    async getCurrentUser({ commit }, user) {
       const currentUser = auth.currentUser.uid;
       const dataBase = await firestore.collection("users").doc(currentUser);
       const dbResults = await dataBase.get();
 
       commit("setProfileInfo", dbResults);
       commit("setProfileInitials");
+      const token = await user.getIdTokenResult()
+      const admin = await token.claims.admin;
+      commit("setProfileAdmin", admin)
     },
+
     async updateUserProfile({ commit, state }) {
       const dataBase = await firestore.collection("users").doc(state.profileId);
       await dataBase.update({

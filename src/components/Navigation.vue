@@ -10,7 +10,7 @@
         <ul v-show="!mobile">
           <router-link class="link" :to="{ name: 'home' }">Home</router-link>
           <router-link class="link" :to="{ name: 'blogs' }">Blogs</router-link>
-          <router-link class="link" to="#">Create Post</router-link>
+          <router-link class="link" v-if="admin" to="#">Create Post</router-link>
           <router-link v-if="!user" class="link" :to="{ name: 'login' }"
             >Login/Register</router-link
           >
@@ -31,7 +31,7 @@
       <ul class="mobile-nav" v-show="mobileNav">
         <router-link class="link" :to="{ name: 'home' }">Home</router-link>
         <router-link class="link" :to="{ name: 'blogs' }">Blogs</router-link>
-        <router-link class="link" to="#">Create Post</router-link>
+        <router-link class="link" to="#" v-if="admin">Create Post</router-link>
         <router-link class="link" :to="{ name: 'login' }" v-if="!user"
           >Login/Register</router-link
         >
@@ -85,6 +85,9 @@ export default {
     user() {
       return this.$store.state.user;
     },
+    admin(){
+      return this.$store.state.profileAdmin
+    }
   },
 };
 </script>

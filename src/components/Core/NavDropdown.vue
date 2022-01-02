@@ -16,7 +16,7 @@
         <userIcon class="icon" />
         <p>Profile</p>
       </router-link>
-      <router-link :to="{name:'admin'}" class="option">
+      <router-link :to="{name:'admin'}" class="option" v-if="admin">
         <adminIcon class="icon" />
         <p>Admin</p>
       </router-link>
@@ -50,6 +50,11 @@ export default {
         }
       });
     },
+  },
+  computed:{
+    admin(){
+      return this.$store.state.profileAdmin
+    }
   },
   emits: ["close-dropdown"],
 };

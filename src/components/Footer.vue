@@ -50,14 +50,13 @@ import instagram from "../assets/Icons/instagram-brands.svg";
 import twitter from "../assets/Icons/twitter-brands.svg";
 import linkedin from "../assets/Icons/linkedin-brands.svg";
 
-import {auth} from "../firebase/firebaseInit"
+import { auth } from "../firebase/firebaseInit";
 
 export default {
   name: "footer-section",
   data() {
     return {
       year: "",
-      admin: null,
     };
   },
   methods: {
@@ -79,6 +78,9 @@ export default {
   computed: {
     user() {
       return this.$store.state.user;
+    },
+    admin() {
+      return this.$store.state.profileAdmin;
     },
   },
   created() {
