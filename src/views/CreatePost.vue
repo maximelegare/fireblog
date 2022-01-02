@@ -31,6 +31,7 @@
           :editorOptions="editorSettings"
           v-model="blogHTML"
           useCustomImageHandler
+          @image-added="imageHandler"
         ></vue-editor>
       </div>
       <div class="blog-actions">
@@ -48,6 +49,8 @@ const ImageResize = require("quill-image-resize-module").default;
 Quill.register("module/imageResize", ImageResize);
 
 import BlogCoverPreview from "../components/BlogCoverPreview.vue";
+import firebase from "firebase/app";
+import "firebase/storage";
 
 export default {
   components: { BlogCoverPreview },
@@ -73,6 +76,24 @@ export default {
     },
     openPhotoPreview() {
       this.$store.commit("openPhotoPreview");
+    },
+    imageHandler(file, Editor, cursorLocation, resetUploader) {
+      const storageRef = firebase.storage().ref();
+      const docRef = storageRef.child(`documents/blogPostPhotos/${file.name}`);
+
+      docRef.put(file).on(
+        "state_changed",
+        () => (snapshot) => {
+          console.log(snapshot);
+        },
+        (err) => {
+          console.log(err);
+        }, async () => {
+            const downloadUrl = await docRef.getDownloadURL()
+            Editor.insertEmbed(cursorLocation, "image", downloadUrl)
+            resetUploader()
+        }
+      );
     },
   },
   computed: {
