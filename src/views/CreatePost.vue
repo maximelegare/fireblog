@@ -1,9 +1,11 @@
 <template>
   <div class="create-post">
     <BlogCoverPreview v-show="blogPhotoPreview" />
+    <Loading v-if="isLoading"/>
+
     <div class="container">
-      <div :class="{ invisible: !error }" class="error-message">
-        <p><span>Error:</span>{{ this.errorMsg }}</p>
+      <div :class="{ invisible: !error }" class="err-message">
+        <p><span>Error: </span>{{ this.errorMsg }}</p>
       </div>
       <div class="blog-info">
         <input type="text" placeholder="Enter Blog Title" v-model="blogTitle" />
@@ -35,8 +37,10 @@
         ></vue-editor>
       </div>
       <div class="blog-actions">
-        <button>Publish Blog</button>
-        <router-link class="router-button" :to="{name:'blogPreview'}">Post Preview</router-link>
+        <button @click="uploadBlog">Publish Blog</button>
+        <router-link class="router-button" :to="{ name: 'blogPreview' }"
+          >Post Preview</router-link
+        >
       </div>
     </div>
   </div>
@@ -51,15 +55,18 @@ Quill.register("module/imageResize", ImageResize);
 import BlogCoverPreview from "../components/BlogCoverPreview.vue";
 import firebase from "firebase/app";
 import "firebase/storage";
+import { firestore } from "../firebase/firebaseInit";
+import Loading from '../components/Core/Loading.vue';
 
 export default {
-  components: { BlogCoverPreview },
+  components: { BlogCoverPreview, Loading },
   name: "createPost",
   data() {
     return {
       error: null,
       errorMsg: null,
       file: null,
+      isLoading:false,
       editorSettings: {
         modules: {
           imageResize: {},
@@ -88,12 +95,65 @@ export default {
         },
         (err) => {
           console.log(err);
-        }, async () => {
-            const downloadUrl = await docRef.getDownloadURL()
-            Editor.insertEmbed(cursorLocation, "image", downloadUrl)
-            resetUploader()
+        },
+        async () => {
+          const downloadUrl = await docRef.getDownloadURL();
+          Editor.insertEmbed(cursorLocation, "image", downloadUrl);
+          resetUploader();
         }
       );
+    },
+    uploadBlog() {
+      if (this.blogTitle.length !== 0 && this.blogHTML !== 0) {
+        if (this.file) {
+          this.isLoading = true  
+          const storageRef = firebase.storage().ref();
+          const docRef = storageRef.child(
+            `documents/blogCoverPhotos/${this.blogPhotoName}`
+          );
+
+          docRef.put(this.file).on(
+            "state_changed",
+            (snapshot) => {
+              console.log(snapshot);
+            },
+            (err) => {
+              console.log(err);
+            },
+            async () => {
+              const downloadUrl = await docRef.getDownloadURL();
+              const timeStamp = Date.now();
+
+              const dataBase = await firestore.collection("blogPosts").doc();
+
+              await dataBase.set({
+                blogId: dataBase.id,
+                blogHTML: this.blogHTML,
+                blogCoverPhoto: downloadUrl,
+                blogPhotoName: this.blogPhotoName,
+                blogTitle: this.blogTitle,
+                profileId: this.profileId,
+                date: timeStamp,
+              });
+              this.isLoading = false
+              this.$router.push({ name: "viewBlog" });
+            }
+          );
+
+          return;
+        }
+        this.setError("PLease make sure you uploaded a cover photo!");
+        return;
+      }
+      this.setError("Please ensure Blog Title & Blog Post has been filled!");
+    },
+    setError(message) {
+      this.error = true;
+      this.errorMsg = message;
+      setTimeout(() => {
+        this.error = false;
+        this.errorMsg = "";
+      }, 5000);
     },
   },
   computed: {

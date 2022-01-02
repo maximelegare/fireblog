@@ -9,7 +9,7 @@
       <h2>Account Settings</h2>
       <div class="profile-info">
         <div class="initials">{{ $store.state.profileInitials }}</div>
-        <div class="admin-badge">
+        <div class="admin-badge" v-if="admin">
           <adminIcon class="icon" />
           <span>admin</span>
         </div>
@@ -86,6 +86,9 @@ export default {
       },
       email(){
           return this.$store.state.profileEmail
+      },
+      admin(){
+        return this.$store.state.profileAdmin 
       }
   }
 };
