@@ -35,9 +35,14 @@ export default new Vuex.Store({
         blogDate: "May 1, 2021",
       },
     ],
+    blogHTML: "Write your blog here...",
+    blogTitle: "",
+    blogPhotoName: "",
+    blogPhotoFileUrl: null,
+    blogPhotoPreview: false,
     editPost: null,
     user: null,
-    profileAdmin:null,
+    profileAdmin: null,
     profileId: null,
     profileEmail: null,
     profileFirstName: null,
@@ -46,6 +51,21 @@ export default new Vuex.Store({
     profileInitials: null,
   },
   mutations: {
+    newBlogPost(state, payload) {
+      state.blogHTML = payload;
+    },
+    updateBlogTitle(state, payload){
+      state.blogTitle = payload
+    },
+    fileNameChange(state, payload) {
+      state.blogPhotoName = payload
+    },
+    createFileUrl(state, payload){
+      state.blogPhotoFileUrl = payload
+    },
+    openPhotoPreview(state){
+      state.blogPhotoPreview = !state.blogPhotoPreview
+    },
     toggleEditPost(state, payload) {
       state.editPost = payload;
     },
@@ -59,8 +79,8 @@ export default new Vuex.Store({
     updateUser(state, payload) {
       state.user = payload;
     },
-    setProfileAdmin(state, payload){
-      state.profileAdmin = payload
+    setProfileAdmin(state, payload) {
+      state.profileAdmin = payload;
     },
     changeFirstName(state, payload) {
       state.profileFirstName = payload;
@@ -71,14 +91,12 @@ export default new Vuex.Store({
     changeUserName(state, payload) {
       state.profileUserName = payload;
     },
-
     setProfileInitials(state) {
       const initials =
         state.profileFirstName.match(/(\b\S)?/g).join("") +
         state.profileLastName.match(/(\b\S)?/g).join("");
       state.profileInitials = initials.toUpperCase();
     },
-    
   },
   actions: {
     async getCurrentUser({ commit }, user) {
@@ -88,9 +106,9 @@ export default new Vuex.Store({
 
       commit("setProfileInfo", dbResults);
       commit("setProfileInitials");
-      const token = await user.getIdTokenResult()
+      const token = await user.getIdTokenResult();
       const admin = await token.claims.admin;
-      commit("setProfileAdmin", admin)
+      commit("setProfileAdmin", admin);
     },
 
     async updateUserProfile({ commit, state }) {

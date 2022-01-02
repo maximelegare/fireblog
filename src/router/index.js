@@ -7,6 +7,7 @@ import Register from "../views/Register.vue"
 import ForgotPassword from "../views/ForgotPassword.vue"
 import Admin from "../views/Admin.vue"
 import Profile from "../views/Profile.vue"
+import CreatePost from "../views/CreatePost.vue"
 
 Vue.use(VueRouter);
 
@@ -65,6 +66,14 @@ const routes = [
     component: Profile,
     meta:{
       title:"Profile"
+    }
+  },
+  {
+    path: "/create-post",
+    name: "createPost",
+    component: CreatePost,
+    meta:{
+      title:"createPost"
     }
   },
   
