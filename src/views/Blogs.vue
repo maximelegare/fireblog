@@ -3,7 +3,7 @@
     <div class="container">
       <ToggleButton @handle-change="handleChange" />
       <div class="blog-cards">
-        <BlogCard v-for="post in sampleBlogCards" :key="post.id" :post="post" />
+        <BlogCard v-for="post in blogPosts" :key="post.id" :post="post" />
       </div>
     </div>
   </div>
@@ -23,8 +23,8 @@ export default {
     },
   },
   computed: {
-    sampleBlogCards() {
-      return this.$store.state.sampleBlogCards;
+    blogPosts() {
+      return this.$store.state.blogPosts;
     },
   },
 };

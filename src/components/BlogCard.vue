@@ -8,14 +8,19 @@
         <Delete class="delete" />
       </div>
     </div>
-    <img
-      :src="require(`../assets/blogCards/${post.BlogCoverPhoto}.jpg`)"
-      alt=""
-    />
+    <img :src="post.blogCoverPhoto" alt="" />
     <div class="info">
       <h4>{{ post.blogTitle }}</h4>
-      <h6>Posted on: {{ post.blogDate }}</h6>
-      <router-link class="link" to="#">
+      <h6>
+        Posted on:
+        {{
+          new Date(post.blogDate).toLocaleString("en-us", { dateStyle: "long" })
+        }}
+      </h6>
+      <router-link
+        class="link"
+        :to="{ name: 'viewBlog', params: { blogid: this.post.blogId } }"
+      >
         View The Post <Arrow class="arrow" />
       </router-link>
     </div>
@@ -32,13 +37,13 @@ export default {
   props: {
     post: Object,
   },
-  computed:{
-    editPost(){
-      return this.$store.state.editPost
-    }
+  computed: {
+    editPost() {
+      return this.$store.state.editPost;
+    },
   },
-  beforeDestroy(){
-    this.$store.commit("toggleEditPost", false)
+  beforeDestroy() {
+    this.$store.commit("toggleEditPost", false);
   },
   components: {
     Arrow,

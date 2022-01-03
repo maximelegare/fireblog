@@ -1,7 +1,7 @@
 <template>
   <div class="create-post">
     <BlogCoverPreview v-show="blogPhotoPreview" />
-    <Loading v-if="isLoading"/>
+    <Loading v-show="isLoading"/>
 
     <div class="container">
       <div :class="{ invisible: !error }" class="err-message">
@@ -118,13 +118,14 @@ export default {
               console.log(snapshot);
             },
             (err) => {
+              this.error = false  
               console.log(err);
             },
             async () => {
               const downloadUrl = await docRef.getDownloadURL();
               const timeStamp = Date.now();
 
-              const dataBase = await firestore.collection("blogPosts").doc();
+              const dataBase = firestore.collection("blogPosts").doc();
 
               await dataBase.set({
                 blogId: dataBase.id,
@@ -136,6 +137,7 @@ export default {
                 date: timeStamp,
               });
               this.isLoading = false
+              this.$store.dispatch("getPosts")
               this.$router.push({ name: "viewBlog" });
             }
           );
