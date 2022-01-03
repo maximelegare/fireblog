@@ -1,7 +1,7 @@
 <template>
   <div class="blog-card">
     <div class="icons" v-show="editPost">
-      <div class="icon">
+      <div class="icon" @click="handleEditPost">
         <Edit class="edit" />
       </div>
       <div class="icon" @click="deletePost">
@@ -53,6 +53,9 @@ export default {
   methods:{
     deletePost(){
       this.$store.dispatch("deletePost", this.post.blogId)
+    },
+    handleEditPost(){
+      this.$router.push({name:'editBlog', params:{blogid:this.post.blogId}})
     }
   }
 };

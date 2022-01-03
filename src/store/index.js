@@ -26,13 +26,13 @@ export default new Vuex.Store({
     profileUserName: null,
     profileInitials: null,
   },
-  getters:{
-    blogPostsFeed(state){
-      return state.blogPosts.slice(0, 2)
+  getters: {
+    blogPostsFeed(state) {
+      return state.blogPosts.slice(0, 2);
     },
-    blogPostsCards(state){
-      return state.blogPosts.slice(2, 6)
-    }
+    blogPostsCards(state) {
+      return state.blogPosts.slice(2, 6);
+    },
   },
   mutations: {
     newBlogPost(state, payload) {
@@ -53,8 +53,16 @@ export default new Vuex.Store({
     toggleEditPost(state, payload) {
       state.editPost = payload;
     },
-    deletePost(state, payload){
-      state.blogPosts = state.blogPosts.filter((post) => post.blogId !== payload)
+    setBlogState(state, payload) {
+      state.blogTitle = payload.blogTitle;
+      state.blogHTML = payload.blogHTML;
+      state.blogPhotoFileUrl = payload.blogCoverPhoto;
+      state.blogPhotoName = payload.blogPhotoName;
+    },
+    filterPost(state, payload) {
+      state.blogPosts = state.blogPosts.filter(
+        (post) => post.blogId !== payload
+      );
     },
     setProfileInfo(state, payload) {
       state.profileId = payload.id;
@@ -85,12 +93,11 @@ export default new Vuex.Store({
       state.profileInitials = initials.toUpperCase();
     },
     setBlogPosts(state, payload) {
-      state.blogPosts.push(payload)
+      state.blogPosts.push(payload);
     },
-    setPostLoaded(state, payload){
-      state.postsLoaded = payload
+    setPostLoaded(state, payload) {
+      state.postsLoaded = payload;
     },
-    
   },
   actions: {
     async getCurrentUser({ commit }, user) {
@@ -118,13 +125,18 @@ export default new Vuex.Store({
             blogCoverPhoto: doc.data().blogCoverPhoto,
             blogTitle: doc.data().blogTitle,
             blogDate: doc.data().date,
+            blogPhotoName:doc.data().blogPhotoName
           };
           commit("setBlogPosts", data);
         }
       });
-      commit("setPostLoaded", true)
-      console.log(state.blogPosts)
+      commit("setPostLoaded", true);
+      console.log(state.blogPosts);
     },
+    async updatePost({commit, dispatch}, payload){
+      commit("filterPost", payload)
+      await dispatch("getPosts")
+    }, 
     async updateUserProfile({ commit, state }) {
       const dataBase = await firestore.collection("users").doc(state.profileId);
       await dataBase.update({
@@ -135,11 +147,11 @@ export default new Vuex.Store({
 
       commit("setProfileInitials");
     },
-    async deletePost({commit}, blogId){
-      const getPost = firestore.collection("blogPosts").doc(blogId)
-      await getPost.delete()
-      commit("deletePost", blogId)
-    }
+    async deletePost({ commit }, blogId) {
+      const getPost = firestore.collection("blogPosts").doc(blogId);
+      await getPost.delete();
+      commit("filterPost", blogId);
+    },
   },
   modules: {},
 });
