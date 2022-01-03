@@ -53,6 +53,9 @@ export default new Vuex.Store({
     toggleEditPost(state, payload) {
       state.editPost = payload;
     },
+    deletePost(state, payload){
+      state.blogPosts = state.blogPosts.filter((post) => post.blogId !== payload)
+    },
     setProfileInfo(state, payload) {
       state.profileId = payload.id;
       state.profileEmail = payload.data().email;
@@ -86,7 +89,8 @@ export default new Vuex.Store({
     },
     setPostLoaded(state, payload){
       state.postsLoaded = payload
-    }
+    },
+    
   },
   actions: {
     async getCurrentUser({ commit }, user) {
@@ -131,6 +135,11 @@ export default new Vuex.Store({
 
       commit("setProfileInitials");
     },
+    async deletePost({commit}, blogId){
+      const getPost = firestore.collection("blogPosts").doc(blogId)
+      await getPost.delete()
+      commit("deletePost", blogId)
+    }
   },
   modules: {},
 });

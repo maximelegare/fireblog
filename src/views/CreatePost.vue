@@ -1,7 +1,7 @@
 <template>
   <div class="create-post">
     <BlogCoverPreview v-show="blogPhotoPreview" />
-    <Loading v-show="isLoading"/>
+    <Loading v-show="isLoading" />
 
     <div class="container">
       <div :class="{ invisible: !error }" class="err-message">
@@ -56,7 +56,7 @@ import BlogCoverPreview from "../components/BlogCoverPreview.vue";
 import firebase from "firebase/app";
 import "firebase/storage";
 import { firestore } from "../firebase/firebaseInit";
-import Loading from '../components/Core/Loading.vue';
+import Loading from "../components/Core/Loading.vue";
 
 export default {
   components: { BlogCoverPreview, Loading },
@@ -66,7 +66,7 @@ export default {
       error: null,
       errorMsg: null,
       file: null,
-      isLoading:false,
+      isLoading: false,
       editorSettings: {
         modules: {
           imageResize: {},
@@ -106,7 +106,7 @@ export default {
     uploadBlog() {
       if (this.blogTitle.length !== 0 && this.blogHTML !== 0) {
         if (this.file) {
-          this.isLoading = true  
+          this.isLoading = true;
           const storageRef = firebase.storage().ref();
           const docRef = storageRef.child(
             `documents/blogCoverPhotos/${this.blogPhotoName}`
@@ -118,7 +118,7 @@ export default {
               console.log(snapshot);
             },
             (err) => {
-              this.error = false  
+              this.error = false;
               console.log(err);
             },
             async () => {
@@ -136,9 +136,13 @@ export default {
                 profileId: this.profileId,
                 date: timeStamp,
               });
-              this.isLoading = false
-              this.$store.dispatch("getPosts")
-              this.$router.push({ name: "viewBlog" });
+              await this.$store.dispatch("getPosts");
+              this.isLoading = false;
+              
+              this.$router.push({
+                name: "viewBlog",
+                params: { blogid: dataBase.id },
+              });
             }
           );
 

@@ -4,7 +4,7 @@
       <div class="icon">
         <Edit class="edit" />
       </div>
-      <div class="icon">
+      <div class="icon" @click="deletePost">
         <Delete class="delete" />
       </div>
     </div>
@@ -50,6 +50,11 @@ export default {
     Edit,
     Delete,
   },
+  methods:{
+    deletePost(){
+      this.$store.dispatch("deletePost", this.post.blogId)
+    }
+  }
 };
 </script>
 
